@@ -1,0 +1,35 @@
+// hoofdletters maken niet uit, leestekens worden weggefilterd.
+
+Weather:
+	is the weather good?
+	is the weather bad?
+	is the weather nice?
+	is the weather ugly?
+
+	Do we have nice weather?
+	do we have bad weather?
+	do we have ugly weather?
+	do we have good weather?
+
+	How's the weather?
+	how is the weather?
+	what is the weather?
+	what's the weather?
+
+Temperature:
+
+	What's the temperature?
+	what is the temperature?
+	how's the temperature?
+	how is the temperature?
+
+	is the temperature hot?
+		 	   warm
+			   nice
+		           bad
+			   cold
+
+Sunrise/sunset:
+
+	when is the sunset/sunrise?
+
