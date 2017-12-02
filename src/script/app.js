@@ -1,29 +1,33 @@
 'use strict';
 
 
-console.log("dfqdfqdf");
+console.log("ddd");
 
 var query = "";
 
 var holder = "";
 var input= "";
-var city = "";
 var messages = "";
 var chatwindow = "";
+var help = "";
+var form_box = "";
 
-
+var body = "";
 var citydata = "";
 var datakeywords = ["--","weather", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
 var leestekens = [".", "?", "!"];
 
 var state = 1;
-var input_found = 1;
+
 
 var chosen_city;
 var output = "";
 
 
 var adjectives = [];
+
+var bool = 0;
+
 
 // temperatuur uitrekenen in fahrenheit?
 // temperatuur uitrekenen in kelvin?
@@ -32,7 +36,7 @@ var adjectives = [];
 
 //------------------ get weatherbycity ------------------
 
-function getWeatherByCity(city) {
+function getWeatherByCity(city, callback) {
     var xhttp = new XMLHttpRequest();
     query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + city + '")';
     xhttp.onreadystatechange = function()
@@ -40,16 +44,25 @@ function getWeatherByCity(city) {
         if (this.readyState == 4 && this.status == 200)
         {
             var data = JSON.parse(xhttp.responseText).query.results.channel;
-
+            bool +=1;
+            console.log("test")
 
         }
+
+        // else {
+        //     bool = 0;
+        // }
+
+        // callback(bool);
+
     };
+
 
     chosen_city = city;
     xhttp.open('GET', 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
     xhttp.send();
-
-
+    callback(bool);
+    bool = 0;
 }
 
 
@@ -58,16 +71,22 @@ function getWeatherByCity(city) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // TODO: 1 Two vars as a present: (it is poisoned...)
+
     input = document.querySelector('.input__text');
     holder = document.querySelector('.holder');
-    // chatwindow = document.querySelector('.chatwindow');
     messages = document.querySelector('.chatwindow');
+    help = document.querySelector('.title__help');
+    form_box = document.querySelector('.form_box');
+    body = document.querySelector('body');
+    console.log(body);
+
+
+
 
 
 
     checkstate(state);
-    // TODO: 2 I want to enter ↩
+
     document.addEventListener('keypress', function( e ) {
         // is het enter?
         if (e.keyCode == 13){
@@ -77,20 +96,67 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
         }
     });
+
+
+    help.addEventListener('click', function (e) {
+        form_box.style.display = 'block';
+    });
+
+
+
+
+
 });
 
 
 function checkInput( input ) {
 
+    var ja_ik_heb_city_gevonden = 0;
 
     if(state == 1) {
 
-        if(checkForCity(input)!= "") {
-            checkForCity(input);
-            state += 1;
-            checkstate(state);
-            createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
+        getWeatherByCity(input, function (value) {
+            console.log(value);
+            // if(value==1) {
+            //     console.log(value);
+            //
+
+            // }
+            // else {
+            //     createAndAddNewResponse("I don't know this city, try again.")
+            // }
+            if(value == 1) {
+                ja_ik_heb_city_gevonden = 1;
+                console.log("value gevonden")
+            }
+            else {
+                ja_ik_heb_city_gevonden = 0;
+                console.log("value niet gevonden")
+            }
+
+
+        });
+
+
+        console.log("mijn citygevondenstate is: " + ja_ik_heb_city_gevonden);
+
+        switch(ja_ik_heb_city_gevonden) {
+            case 1:
+                getWeatherByCity(input, function(value) {console.log(value)});
+                console.log(state + " state");
+                state += 1;
+                checkstate(state);
+                createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
+                break;
+
+            case 0:
+                createAndAddNewResponse("I don't know this city, try again.");
+                console.log("nope");
+                break;
+
         }
+
+
 
     }
 
@@ -161,11 +227,38 @@ function checkInput( input ) {
 }
 
 
-function checkForCity(input) {
+function checkcondition(data) {
+    if(data.toLowerCase().indexOf("cloudy")>=0) {
+        body.style.background = 'url("../images/clouds.jpg")';
+        body.style.backgroundSize = "cover";
+        body.style.backgroundAttachment = "fixed";
 
-   return getWeatherByCity(input);
+    }
 
+    else if(data.toLowerCase().indexOf("snow" )>=0) {
+        body.style.background = 'url("../images/snow.jpg")';
+        body.style.backgroundSize = "cover";
+        body.style.backgroundAttachment = "fixed";
+
+    }
+
+    else if(data.toLowerCase().indexOf("showers" )>=0) {
+        body.style.background = 'url("../images/rain.jpg")';
+        body.style.backgroundSize = "cover";
+        body.style.backgroundAttachment = "fixed";
+
+
+    }
+
+    else if(data.toLowerCase().indexOf("sunny" )>=0) {
+        body.style.background = 'url("../images/sunny.jpg")';
+        body.style.backgroundSize = "cover";
+        body.style.backgroundAttachment = "fixed";
+
+
+    }
 }
+
 
 function deletePunctationMarks(input) {
     if(input[input.length-1] == "!" || input[input.length-1] == "." || input[input.length-1] == "?" ) {
@@ -184,6 +277,7 @@ function deletePunctationMarks(input) {
 function checkForData(input, arrayToCheck) {
     writeInput(input);
     input =  deletePunctationMarks(input);
+    var input_found = 1;
     var inputarray = input.split(' ');
     var xhttp = new XMLHttpRequest();
     query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + chosen_city + '") and u="c"';
@@ -193,17 +287,23 @@ function checkForData(input, arrayToCheck) {
             var data = JSON.parse(xhttp.responseText).query.results.channel;
              console.log(data);
              console.log(data.item.condition.temp);
+             checkcondition(data.item.condition.text);
             for (var i = 0; i < inputarray.length; i++) {
 
-                if(input_found == 1) {
-                    createAndAddNewResponse("I don't understand what you're saying. Might I suggest google?")
-                }
+
 
                 if (~arrayToCheck.indexOf(inputarray[i])) {
 
                     input_found +=1 ;
 
                     switch(inputarray[i]) {
+
+                        //case hello
+                            // case how are you doing?
+                            // --> array van antwoorden meegeven
+
+
+                            // case how cold, warm? 
                         case "weather":
 
                             // ook nog kijken voor bv "will the weather be nice today?", "what weather can I expect?"
@@ -245,12 +345,21 @@ function checkForData(input, arrayToCheck) {
 
                                                     }
                                                 }
-                                            }                            }
+                                            }
 
-                            else if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is") ) {
-                                createAndAddNewResponse("Today the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase())
                             }
 
+                            else if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is") ) {
+                                createAndAddNewResponse("Today the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase());
+
+
+
+
+                            }
+
+                            else {
+                                createAndAddNewResponse("Please write a full sentence, O lazy one.")
+                            }
 
                             break;
 
@@ -259,10 +368,11 @@ function checkForData(input, arrayToCheck) {
 
 
                         case "temperature":
-                            if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is")) {
+                            if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is") || (inputarray[0] == "could" && inputarray[1]=="you") || (inputarray[0] == "would" && inputarray[1]=="you")) {
                                 createAndAddNewResponse("The temperature is " + data.item.condition.temp + " °C.");
                                 break;
                             }
+
 
 
                             else if(inputarray[0] == "is") {
@@ -310,6 +420,11 @@ function checkForData(input, arrayToCheck) {
                                 }
                             }
 
+                            else {
+                                createAndAddNewResponse("Please write a full sentence, you lazy one.")
+                            }
+
+
                             break;
 
                         case "sunrise":
@@ -323,17 +438,33 @@ function checkForData(input, arrayToCheck) {
                             break;
 
                         case "humidity":
-                            createAndAddNewResponse("The humidity is " + data.atmosphere.humidity + "%.");
+                            if(inputarray[0] == "what" || inputarray[0] == "what's" || (inputarray[0] == "could" && inputarray[1]=="you") || (inputarray[0] == "would" && inputarray[1]=="you")) {
+                                createAndAddNewResponse("The humidity is " + data.atmosphere.humidity + "%.");
+                            }
+
+                            else {
+                                createAndAddNewResponse("Please write a full sentence, you lazy one.")
+                            }
+
                             break;
 
-
-
                         // case today
+                        // case tomorrow
                         // case forecast
+                        // case wind
+                            //speed
+                            //direction
+                        //case location
+                            //country
+                            //region
+                        //case kelvin
+                        //case fahrenheit
+                        // ook nog tonen welke stad gekozen werd
 
                         case "--":
                             removeAllOutput();
                             checkstate(state);
+                            body.style.background = 'url("../images/normal.jpg")';
                             break;
 
                     }
@@ -345,6 +476,11 @@ function checkForData(input, arrayToCheck) {
 
 
             }
+
+            if(input_found == 1) {
+                createAndAddNewResponse("I don't understand what you're saying. Might I suggest google?")
+            }
+
             input_found =  1;
             return false;
 
@@ -440,7 +576,6 @@ function createAndAddNewResponse( customText ) {
 
 }
 
-// TODO: 7 Gets an array and returns a random item
 function getRandomResponse( responses ) {
     return responses[ Math.floor( Math.random() * responses.length ) ]
 }
@@ -451,127 +586,9 @@ function getRandomResponse( responses ) {
 
 
 
-// // TODO: 5 Check if an array contains something from the input
-// function checkForKeyWords( inp, arrayToCheck ) {
-//     // inp is a string, hard to use...
-//     var inpArray = inp.split(' ');
-//     for (var i = 0; i < inpArray.length ; i++)
-//     {
-//         if ( ~arrayToCheck.indexOf( inpArray[i] ) ) {
-//             // chosen_country = arrayToCheck[i];
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-
-// TODO: 6 Get an array OR text and adds a new answer
 
 
 
-
-
-
-
-
-// var key = "YE8kkvGTg7mXnMYpz";
-// var url = "https://cors-anywhere.herokuapp.com/http://api.airvisual.com/v2/";
-// var countries = [];
-// var states = [];
-// var cities = [];
-// var city_details = [];
-// var chosen_country = "Belgium";
-// var chosen_state = "West-Vlaanderen";
-// var chosen_city = "Roeselare";
-//
-// var holder = "";
-//
-//
-// console.log("tsst");
-//
-// // // get countries
-// //
-// function getcountries() {
-//     url = url + "countries?key=" + key;
-//     jQuery.getJSON(url, succes);
-//     function succes(data) {
-//         for (var i = 0, len = data.data.length; i < len; i++) {
-//             countries.push(data.data[i].country);
-//
-//         }
-//         console.log(countries);
-//     }
-//
-//     url = "https://cors-anywhere.herokuapp.com/http://api.airvisual.com/v2/"
-//
-//
-// }
-//
-// getcountries();
-//
-// // // get states
-// //
-// function getstates() {
-//
-//     url = url + "states?country=" + chosen_country + "&key=" + key;
-//     jQuery.getJSON(url,test);
-//     function test(data) {
-//         for (var i = 0, len = data.data.length; i < len; i++) {
-//             states.push(data.data[i].state);
-//         }
-//
-//         console.log(states);
-//     }
-//
-//     url = "https://cors-anywhere.herokuapp.com/http://api.airvisual.com/v2/"
-//
-//
-//
-//
-// }
-//
-// getstates();
-//
-// //
-// function getcities() {
-//     url = url + "cities?state=" + chosen_state + "&country=" + chosen_country + "&key=" + key;
-//     jQuery.getJSON(url, test2);
-//     function test2(data) {
-//         for (var i = 0, len = data.data.length; i < len; i++) {
-//             cities.push(data.data[i].city);
-//         }
-//
-//         console.log(cities);
-//     }
-//
-//     url = "https://cors-anywhere.herokuapp.com/http://api.airvisual.com/v2/"
-//
-//
-// }
-// //
-//  getcities();
-//
-// function getcitydetails() {
-//     url = url + "city?city=" + chosen_city + "&state=" + chosen_state + "&country=" + chosen_country + "&key=" + key;
-//     console.log(url);
-//     jQuery.getJSON(url, test3);
-//     function test3(data) {
-//         for (var i = 0, len = data.data.length; i < len; i++) {
-//             city_details = data.data.current.pollution;
-//         }
-//
-//         console.log(data.data.current);
-//     }
-//     url = "https://cors-anywhere.herokuapp.com/http://api.airvisual.com/v2/"
-//
-// }
-//
-// //
-// //
-// getcitydetails();
-// //
-// //
 
 
 
