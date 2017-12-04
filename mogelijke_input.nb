@@ -5,6 +5,7 @@ Weather:
 	is the weather bad?
 	is the weather nice?
 	is the weather ugly?
+	
 
 	Do we have nice weather?
 	do we have bad weather?
@@ -15,6 +16,8 @@ Weather:
 	how is the weather?
 	what is the weather?
 	what's the weather?
+	would you
+	could you
 
 Temperature:
 
@@ -22,12 +25,18 @@ Temperature:
 	what is the temperature?
 	how's the temperature?
 	how is the temperature?
+	could you
+	would you
 
 	is the temperature hot?
 		 	   warm
 			   nice
 		           bad
 			   cold
+
+
+humidity: 
+
 
 Sunrise/sunset:
 

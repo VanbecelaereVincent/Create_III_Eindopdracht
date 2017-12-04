@@ -1,6 +1,6 @@
 .title {
   background-color: #384042;
-  width: 700px;
+  max-width: 700px;
   margin: 0 auto;
   height: 50px;
   border-radius: 10px 10px 0 0 ;
@@ -20,7 +20,39 @@
 
 .title__help {
   position: absolute;
-  top: 13px;
-  right: 20px;
+  top: 14px;
+  right: 10px;
 
 }
+
+
+//@media screen and (min-width: $bp5) {
+//  .title {
+//    width: 80%;
+//  }
+//}
+//
+//@media screen and (min-width: $bp4) {
+//  .title {
+//    width: 60%;
+//  }
+//}
+//
+//@media screen and (min-width: $bp3) {
+//  .title {
+//    width: 40%;
+//  }
+//}
+//
+//
+//@media screen and (min-width: $bp2) {
+//  .title {
+//    width: 20%;
+//  }
+//}
+//
+//@media screen and (min-width: $bp1) {
+//  .title {
+//    width: 0;
+//  }
+//}

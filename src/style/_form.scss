@@ -10,26 +10,22 @@
 
 
 .form_box form {
-  position: relative;
-  width: 800px;
+  max-width: 800px;
   box-sizing: border-box;
   height: auto;
-
-  //trucje dt ik gevonden heb op het internet om verticaal en horizontaal te centeren
-  left: 50%;
-  top: 50%;
-  margin-top: -300px;
-  margin-left: - 400px;
-
+  margin: 0 auto;
   border-radius: 10px;
   background-color: white;
 }
 
 
-.form_box form h1 {
+.form_box form .h1 {
+
+  box-sizing: border-box;
   border-radius: 10px 10px 0 0 ;
   text-align: center;
-  padding: 10px;
+  line-height: 50px;
+  font-size: 1.5em;
   background-color: #384042;
   color: white;
 }

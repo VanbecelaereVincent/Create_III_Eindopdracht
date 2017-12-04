@@ -1,7 +1,7 @@
-'use strict';
+//'use strict';
 
 
-console.log("ddd");
+console.log("dddddddd");
 
 var query = "";
 
@@ -14,7 +14,7 @@ var form_box = "";
 
 var body = "";
 var citydata = "";
-var datakeywords = ["--","weather", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
+var datakeywords = ["--","weather", "wind", "windspeed", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
 var leestekens = [".", "?", "!"];
 
 var state = 1;
@@ -29,40 +29,40 @@ var adjectives = [];
 var bool = 0;
 
 
-// temperatuur uitrekenen in fahrenheit?
-// temperatuur uitrekenen in kelvin?
-
 
 
 //------------------ get weatherbycity ------------------
 
 function getWeatherByCity(city, callback) {
     var xhttp = new XMLHttpRequest();
+    var bool = 0;
     query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + city + '")';
     xhttp.onreadystatechange = function()
     {
         if (this.readyState == 4 && this.status == 200)
         {
-            var data = JSON.parse(xhttp.responseText).query.results.channel;
-            bool +=1;
-            console.log("test")
+            var data = JSON.parse(xhttp.responseText);
+            if(data.query.results != null){
+                bool +=1;
+                console.log("test");
 
+            }
+
+
+            callback(bool);
         }
 
-        // else {
-        //     bool = 0;
-        // }
 
-        // callback(bool);
 
     };
 
-
     chosen_city = city;
+    chosen_city = chosen_city.toUpperCase();
     xhttp.open('GET', 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
     xhttp.send();
-    callback(bool);
     bool = 0;
+    //callback(bool);
+
 }
 
 
@@ -99,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     help.addEventListener('click', function (e) {
-        form_box.style.display = 'block';
+        form_box.style.display = 'flex';
+        form_box.style.alignItems = 'center';
     });
 
 
@@ -111,9 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function checkInput( input ) {
 
-    var ja_ik_heb_city_gevonden = 0;
 
     if(state == 1) {
+
 
         getWeatherByCity(input, function (value) {
             console.log(value);
@@ -126,11 +127,24 @@ function checkInput( input ) {
             //     createAndAddNewResponse("I don't know this city, try again.")
             // }
             if(value == 1) {
-                ja_ik_heb_city_gevonden = 1;
-                console.log("value gevonden")
+                writeInput(input);
+
+                createAndAddNewResponse("Chosen city: " + chosen_city);
+                console.log("value gevonden");
+
+                console.log(state + " state");
+                state += 1;
+                checkstate(state);
+                createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
             }
+
+
             else {
-                ja_ik_heb_city_gevonden = 0;
+                writeInput(input);
+
+
+                createAndAddNewResponse("I don't know this city, try again.");
+
                 console.log("value niet gevonden")
             }
 
@@ -138,29 +152,29 @@ function checkInput( input ) {
         });
 
 
-        console.log("mijn citygevondenstate is: " + ja_ik_heb_city_gevonden);
 
-        switch(ja_ik_heb_city_gevonden) {
-            case 1:
-                getWeatherByCity(input, function(value) {console.log(value)});
-                console.log(state + " state");
-                state += 1;
-                checkstate(state);
-                createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
-                break;
+        // switch(ja_ik_heb_city_gevonden) {
+        //     case 1:
+        //         getWeatherByCity(input, function(value) {console.log(value)});
+        //         console.log(state + " state");
+        //         state += 1;
+        //         checkstate(state);
+        //         createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
+        //         break;
+        //
+        //     case 0:
+        //         createAndAddNewResponse("I don't know this city, try again.");
+        //         console.log("nope");
+        //         break;
 
-            case 0:
-                createAndAddNewResponse("I don't know this city, try again.");
-                console.log("nope");
-                break;
-
-        }
+        // }
 
 
 
     }
 
     else if(state > 1) {
+
 
         checkForData(input, datakeywords);
         checkstate(state);
@@ -231,6 +245,7 @@ function checkcondition(data) {
     if(data.toLowerCase().indexOf("cloudy")>=0) {
         body.style.background = 'url("../images/clouds.jpg")';
         body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
 
     }
@@ -238,13 +253,15 @@ function checkcondition(data) {
     else if(data.toLowerCase().indexOf("snow" )>=0) {
         body.style.background = 'url("../images/snow.jpg")';
         body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
 
     }
 
-    else if(data.toLowerCase().indexOf("showers" )>=0) {
+    else if(data.toLowerCase().indexOf("showers" )>=0 || data.toLowerCase().indexOf("rain" )>=0) {
         body.style.background = 'url("../images/rain.jpg")';
         body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
 
 
@@ -253,6 +270,7 @@ function checkcondition(data) {
     else if(data.toLowerCase().indexOf("sunny" )>=0) {
         body.style.background = 'url("../images/sunny.jpg")';
         body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
 
 
@@ -273,6 +291,32 @@ function deletePunctationMarks(input) {
 
 }
 
+
+
+function check_is_keywords(input) {
+    input =  deletePunctationMarks(input);
+    var inputarray = input.split(' ');
+
+    if(inputarray[0] == "is" || inputarray[0] == "do") {
+        return true
+    }
+
+    else {
+        return false
+    }
+
+}
+
+function check_what_keywords(input) {
+    input =  deletePunctationMarks(input);
+    var inputarray = input.split(' ');
+    if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || inputarray[0] == "whats" || (inputarray[0] == "what" && inputarray[1] == "is")|| (inputarray[0] == "could" && inputarray[1]=="you") || (inputarray[0] == "would" && inputarray[1]=="you")) {
+        return true
+    }
+    else {
+        return false
+    }
+}
 
 function checkForData(input, arrayToCheck) {
     writeInput(input);
@@ -308,7 +352,7 @@ function checkForData(input, arrayToCheck) {
 
                             // ook nog kijken voor bv "will the weather be nice today?", "what weather can I expect?"
 
-                            if(inputarray[0] == "is" || inputarray[0] == "do") {
+                            if(check_is_keywords(input)) {
                                 for (var x = 0; x < inputarray.length; x++) {
                                                 if (~arrayToCheck.indexOf(inputarray[x])) {
                                                     console.log(inputarray[x]);
@@ -320,11 +364,11 @@ function checkForData(input, arrayToCheck) {
                                                             console.log(data.item.condition.temp);
                                                             if(data.item.condition.temp > 20){
                                                                 // hier nog extra if's over data.item.condition.temp
-                                                                createAndAddNewResponse("Yes, indeed, today we have good weather! :) ");
+                                                                createAndAddNewResponse("Yes, indeed,  we have good weather! :) ");
                                                             }
 
                                                             else {
-                                                                createAndAddNewResponse("Nope, today the weahter is not all that good. :'(");
+                                                                createAndAddNewResponse("Nope, the weather is not all that good. :'(");
                                                             }
                                                             break;
 
@@ -338,7 +382,7 @@ function checkForData(input, arrayToCheck) {
 
                                                             }
                                                             else {
-                                                                createAndAddNewResponse("Nope, today the weahter is acutally quite good! :)(");
+                                                                createAndAddNewResponse("Nope, the weather is acutally quite good! :)(");
                                                             }
                                                             break;
 
@@ -349,13 +393,14 @@ function checkForData(input, arrayToCheck) {
 
                             }
 
-                            else if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is") ) {
-                                createAndAddNewResponse("Today the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase());
+                            else if(check_what_keywords(input) ) {
+                                createAndAddNewResponse("At the moment the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase());
 
 
 
 
                             }
+
 
                             else {
                                 createAndAddNewResponse("Please write a full sentence, O lazy one.")
@@ -368,7 +413,7 @@ function checkForData(input, arrayToCheck) {
 
 
                         case "temperature":
-                            if(inputarray[0] == "how" || inputarray[0] == "how's" || inputarray[0] == "what's" || (inputarray[0] == "what" && inputarray[1] == "is") || (inputarray[0] == "could" && inputarray[1]=="you") || (inputarray[0] == "would" && inputarray[1]=="you")) {
+                            if(check_what_keywords(input)) {
                                 createAndAddNewResponse("The temperature is " + data.item.condition.temp + " °C.");
                                 break;
                             }
@@ -427,6 +472,20 @@ function checkForData(input, arrayToCheck) {
 
                             break;
 
+
+
+                        case "humidity":
+                            if(check_what_keywords(input)) {
+                                createAndAddNewResponse("The humidity is " + data.atmosphere.humidity + "%.");
+                            }
+
+
+                            else {
+                                createAndAddNewResponse("Please write a full sentence, you lazy one.")
+                            }
+
+                            break;
+
                         case "sunrise":
                             // ook kijken voor de vraag when will the sun rise?
                             createAndAddNewResponse("The sunrise is at " + data.astronomy.sunrise);
@@ -437,9 +496,15 @@ function checkForData(input, arrayToCheck) {
                             createAndAddNewResponse("The sunset is at " + data.astronomy.sunset);
                             break;
 
-                        case "humidity":
-                            if(inputarray[0] == "what" || inputarray[0] == "what's" || (inputarray[0] == "could" && inputarray[1]=="you") || (inputarray[0] == "would" && inputarray[1]=="you")) {
-                                createAndAddNewResponse("The humidity is " + data.atmosphere.humidity + "%.");
+
+
+
+                        case "windspeed":
+
+                            if(check_what_keywords(input)) {
+                                createAndAddNewResponse("The windspeed is " + data.wind.speed +" km/h.");
+
+
                             }
 
                             else {
@@ -448,23 +513,42 @@ function checkForData(input, arrayToCheck) {
 
                             break;
 
+
+                        case "wind":
+                            if(check_what_keywords(input)) {
+                                createAndAddNewResponse("The windspeed is " + data.wind.speed +" km/h.");
+
+
+                            }
+
+                            else {
+                                createAndAddNewResponse("Please write a full sentence, you lazy one.")
+                            }
+
+                            break;
+
+
+
+
+
+
                         // case today
                         // case tomorrow
                         // case forecast
-                        // case wind
-                            //speed
-                            //direction
+
                         //case location
                             //country
                             //region
                         //case kelvin
                         //case fahrenheit
-                        // ook nog tonen welke stad gekozen werd
 
                         case "--":
                             removeAllOutput();
                             checkstate(state);
                             body.style.background = 'url("../images/normal.jpg")';
+                            body.style.backgroundSize = "cover";
+                            body.style.backgroundPosition = "center";
+                            body.style.backgroundAttachment = "fixed";
                             break;
 
                     }
@@ -562,6 +646,7 @@ function createAndAddNewResponse( customText ) {
     section.style.width = "auto";
     section.style.margin = 20 + "px";
     section.style.borderRadius = 10 + "px";
+    // section.style.height = "auto";
     section.style.maxWidth = 300 + "px" ;
 
     var clear = document.createElement('section');
