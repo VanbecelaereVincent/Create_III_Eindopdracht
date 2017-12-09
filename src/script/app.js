@@ -1,7 +1,7 @@
-//'use strict';
+'use strict';
 
 
-console.log("dddddddd");
+console.log("d");
 
 var query = "";
 
@@ -15,18 +15,15 @@ var form_box = "";
 var body = "";
 var citydata = "";
 var datakeywords = ["--","weather", "wind", "windspeed", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
-var leestekens = [".", "?", "!"];
+var leestekens = [".", "?", "!", ","];
 
 var state = 1;
 
 
 var chosen_city;
-var output = "";
 
 
-var adjectives = [];
 
-var bool = 0;
 
 
 
@@ -135,7 +132,7 @@ function checkInput( input ) {
                 console.log(state + " state");
                 state += 1;
                 checkstate(state);
-                createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
+                createAndAddNewResponse("Ask me anything. <br> Typing '--' will perform a reset and delete all messages.");
             }
 
 
@@ -342,12 +339,7 @@ function checkForData(input, arrayToCheck) {
 
                     switch(inputarray[i]) {
 
-                        //case hello
-                            // case how are you doing?
-                            // --> array van antwoorden meegeven
 
-
-                            // case how cold, warm? 
                         case "weather":
 
                             // ook nog kijken voor bv "will the weather be nice today?", "what weather can I expect?"
@@ -376,13 +368,13 @@ function checkForData(input, arrayToCheck) {
                                                         case "bad":
                                                         case "ugly":
 
-                                                            if(data.item.condition.temp < 15){
+                                                            if(data.item.condition.temp < 20){
                                                                 // hier nog extra if's over data.item.condition.temp
                                                                 createAndAddNewResponse("Yes, indeed, today we have bad weather! :( ");
 
                                                             }
                                                             else {
-                                                                createAndAddNewResponse("Nope, the weather is acutally quite good! :)(");
+                                                                createAndAddNewResponse("Nope, the weather is actually quite good! :)");
                                                             }
                                                             break;
 
@@ -394,7 +386,7 @@ function checkForData(input, arrayToCheck) {
                             }
 
                             else if(check_what_keywords(input) ) {
-                                createAndAddNewResponse("At the moment the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase());
+                                createAndAddNewResponse("At the moment the temperature is " + data.item.condition.temp+ " °C and the conditions are: " + data.item.condition.text.toLowerCase() +".");
 
 
 
@@ -403,7 +395,7 @@ function checkForData(input, arrayToCheck) {
 
 
                             else {
-                                createAndAddNewResponse("Please write a full sentence, O lazy one.")
+                                createAndAddNewResponse("Please write a full sentence, you lazy one.")
                             }
 
                             break;
@@ -488,12 +480,12 @@ function checkForData(input, arrayToCheck) {
 
                         case "sunrise":
                             // ook kijken voor de vraag when will the sun rise?
-                            createAndAddNewResponse("The sunrise is at " + data.astronomy.sunrise);
+                            createAndAddNewResponse("The sunrise is at " + data.astronomy.sunrise + ".");
                             break;
 
                         case "sunset":
                             // ook kijken voor de vraag when will the sun set?
-                            createAndAddNewResponse("The sunset is at " + data.astronomy.sunset);
+                            createAndAddNewResponse("The sunset is at " + data.astronomy.sunset +".");
                             break;
 
 
@@ -531,7 +523,21 @@ function checkForData(input, arrayToCheck) {
 
 
 
-
+                        case "forecast":
+                            if(check_what_keywords(input)) {
+                                createAndAddNewResponse(data.item.forecast[0].day + ", " + data.item.forecast[0].date  + ": Max = " + data.item.forecast[0].high + " °C, " + "Min: " + data.item.forecast[0].low + "°C"
+                                + "</br>" + data.item.forecast[1].day + ", " + data.item.forecast[1].date  + ": Max = " + data.item.forecast[1].high + " °C, " + "Min: " + data.item.forecast[1].low + "°C"
+                                    + "</br>" + data.item.forecast[2].day + ", " + data.item.forecast[2].date  + ": Max = " + data.item.forecast[2].high + " °C, " + "Min: " + data.item.forecast[2].low + "°C"
+                                    + "</br>" + data.item.forecast[3].day + ", " + data.item.forecast[3].date  + ": Max = " + data.item.forecast[3].high + " °C, " + "Min: " + data.item.forecast[3].low + "°C"
+                                    + "</br>" + data.item.forecast[4].day + ", " + data.item.forecast[4].date  + ": Max = " + data.item.forecast[4].high + " °C, " + "Min: " + data.item.forecast[4].low + "°C"
+                                    + "</br>" + data.item.forecast[5].day + ", " + data.item.forecast[5].date  + ": Max = " + data.item.forecast[5].high + " °C, " + "Min: " + data.item.forecast[5].low + "°C"
+                                    + "</br>" + data.item.forecast[6].day + ", " + data.item.forecast[6].date  + ": Max = " + data.item.forecast[6].high + " °C, " + "Min: " + data.item.forecast[6].low + "°C"
+                                    + "</br>" + data.item.forecast[7].day + ", " + data.item.forecast[7].date  + ": Max = " + data.item.forecast[7].high + " °C, " + "Min: " + data.item.forecast[7].low + "°C"
+                                    + "</br>" + data.item.forecast[8].day + ", " + data.item.forecast[8].date  + ": Max = " + data.item.forecast[8].high + " °C, " + "Min: " + data.item.forecast[8].low + "°C"
+                                    + "</br>" + data.item.forecast[9].day + ", " + data.item.forecast[9].date  + ": Max = " + data.item.forecast[9].high + " °C, " + "Min: " + data.item.forecast[9].low + "°C"
+                                );
+                                break;
+                            }
                         // case today
                         // case tomorrow
                         // case forecast
@@ -627,16 +633,10 @@ function writeInput(inputText) {
     messages.appendChild(section);
     messages.append(clear);
     messages.lastChild.scrollIntoView( true );
-    console.log("ikschweg");
 }
 
 function createAndAddNewResponse( customText ) {
-    // if ( Array.isArray( customText )){
-    //     console.log('Dealing with an array: ' + customText);
-    //     customText = getRandomResponse( customText );
-    // }
-    // New item needs to be created as a:
-    // TODO: 6.1) section with
+
     var section = document.createElement('section');
     section.innerHTML = customText;
     section.style.backgroundColor = "#" + "F" +6 +"F" + 4 +"F" + 5;
@@ -646,7 +646,6 @@ function createAndAddNewResponse( customText ) {
     section.style.width = "auto";
     section.style.margin = 20 + "px";
     section.style.borderRadius = 10 + "px";
-    // section.style.height = "auto";
     section.style.maxWidth = 300 + "px" ;
 
     var clear = document.createElement('section');
@@ -661,9 +660,7 @@ function createAndAddNewResponse( customText ) {
 
 }
 
-function getRandomResponse( responses ) {
-    return responses[ Math.floor( Math.random() * responses.length ) ]
-}
+
 
 
 
