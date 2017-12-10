@@ -240,7 +240,7 @@ function checkInput( input ) {
 
 function checkcondition(data) {
     if(data.toLowerCase().indexOf("cloudy")>=0) {
-        body.style.background = 'url("../images/clouds.jpg")';
+        body.style.background = 'url("images/clouds.jpg")';
         body.style.backgroundSize = "cover";
         body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
@@ -248,7 +248,7 @@ function checkcondition(data) {
     }
 
     else if(data.toLowerCase().indexOf("snow" )>=0) {
-        body.style.background = 'url("../images/snow.jpg")';
+        body.style.background = 'url("images/snow.jpg")';
         body.style.backgroundSize = "cover";
         body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
@@ -256,7 +256,7 @@ function checkcondition(data) {
     }
 
     else if(data.toLowerCase().indexOf("showers" )>=0 || data.toLowerCase().indexOf("rain" )>=0) {
-        body.style.background = 'url("../images/rain.jpg")';
+        body.style.background = 'url("images/rain.jpg")';
         body.style.backgroundSize = "cover";
         body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
@@ -265,7 +265,7 @@ function checkcondition(data) {
     }
 
     else if(data.toLowerCase().indexOf("sunny" )>=0) {
-        body.style.background = 'url("../images/sunny.jpg")';
+        body.style.background = 'url("images/sunny.jpg")';
         body.style.backgroundSize = "cover";
         body.style.backgroundPosition = "center";
         body.style.backgroundAttachment = "fixed";
@@ -551,7 +551,7 @@ function checkForData(input, arrayToCheck) {
                         case "--":
                             removeAllOutput();
                             checkstate(state);
-                            body.style.background = 'url("../images/normal.jpg")';
+                            body.style.background = 'url("images/normal.jpg")';
                             body.style.backgroundSize = "cover";
                             body.style.backgroundPosition = "center";
                             body.style.backgroundAttachment = "fixed";
