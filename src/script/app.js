@@ -14,7 +14,7 @@ var form_box = "";
 
 var body = "";
 var citydata = "";
-var datakeywords = ["--","weather", "wind", "windspeed", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
+var datakeywords = ["--",",","weather", "wind", "windspeed", "humidity", "sunrise", "sunset", "warm", "temperature", "rain", "clouds", "hot", "cold", "freezing", "freeze", "snow", "fahrenheit", "kelvin", "time", "forecast", "date", "nice", "good", "bad", "ugly"];
 var leestekens = [".", "?", "!", ","];
 
 var state = 1;
@@ -58,7 +58,6 @@ function getWeatherByCity(city, callback) {
     xhttp.open('GET', 'https://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
     xhttp.send();
     bool = 0;
-    //callback(bool);
 
 }
 
@@ -110,20 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function checkInput( input ) {
 
 
-    if(state == 1) {
+    if (state == 1) {
 
 
         getWeatherByCity(input, function (value) {
             console.log(value);
-            // if(value==1) {
-            //     console.log(value);
-            //
 
-            // }
-            // else {
-            //     createAndAddNewResponse("I don't know this city, try again.")
-            // }
-            if(value == 1) {
+            if (value == 1) {
                 writeInput(input);
 
                 createAndAddNewResponse("Chosen city: " + chosen_city);
@@ -149,92 +141,17 @@ function checkInput( input ) {
         });
 
 
-
-        // switch(ja_ik_heb_city_gevonden) {
-        //     case 1:
-        //         getWeatherByCity(input, function(value) {console.log(value)});
-        //         console.log(state + " state");
-        //         state += 1;
-        //         checkstate(state);
-        //         createAndAddNewResponse("Ask my anything. <br> Typing '--' will perform a reset and delete all messages");
-        //         break;
-        //
-        //     case 0:
-        //         createAndAddNewResponse("I don't know this city, try again.");
-        //         console.log("nope");
-        //         break;
-
-        // }
-
-
-
     }
 
-    else if(state > 1) {
+    else if (state > 1) {
 
 
         checkForData(input, datakeywords);
         checkstate(state);
-            // var text = checkForData(input, citydata, datakeywords);
 
-        }
-
-        // else if (input == '--'){
-        //
-        // }
+    }
 
 
-
-    // if (input == 'hi'){
-    //     createAndAddNewResponse('Hello')
-    //  }
-
-    // else if(checkForCity(input) != "") {
-    //     var citydata = checkForCity(input);
-    //     if(checkForData(input, citydata, datakeywords) != "") {
-    //         var text = checkForData(input, citydata, datakeywords);
-    //     }
-    //     createAndAddNewResponse(text);
-    //
-    // }
-    //
-    // // else if (checkForKeyWords(input, jokeKeywords)) {
-    // //     createAndAddNewResponse([
-    // //         'Yo mama so stupid She watched an orange to get a consentrate.',
-    // //         'Yo mama so fat when i pictured her in my head, she broke my f*cking neck',
-    // //         'Yo mama so fat from the 5 fattest people i know, she\'s 3 of them',
-    // //         'Yo mama so old when they told her to act her age, she died.',
-    // //         'Yo mama so old her first christmas, was the first christmas',
-    // //         'Yo mama so old she has a friendship bracelet from jesus',
-    // //         'Yo mama so fat she left the house in high heels and when she came back she had on flip flops.',
-    // //         'Yo mama so fat she sat on an iPhone and turned it into an iPad',
-    // //         'Yo mama so fat she went to KFC to get a bucket of chicken they asked her what size and she said the one on the roof',
-    // //         'Yo mama so fat she sued xbox 360 for guessing her weight',
-    // //         'yo mama so fat that she dont need the internet she\'s already world wide',
-    // //         'Yo mama so fat that I ran out of gas trying to drive around her.',
-    // //         'yo mama so fat that she gave draclua diabeties'])
-    // // }
-    // //
-    // // else if (checkForKeyWords(input, glennKeywords)) {
-    // //     createAndAddNewResponse('Sexy as hell!!!')
-    // // }
-    // // else if (checkForKeyWords(input, timeKeyWords)){
-    // //     var d = new Date();
-    // //     createAndAddNewResponse('Right now it is ' + d.getHours() + 'h, ' + d.getMinutes() + 'm ' + d.getSeconds() + 's!')
-    // // }
-    // // else if (checkForKeyWords(input, dateKeywords)){
-    // //     var date = new Date();
-    // //     createAndAddNewResponse('Today is ' + days[date.getDay()-1] + '-' + date.getDate() + '-' + months[date.getMonth()] + '-' + date.getFullYear())
-    // // }
-    // // else if (checkForKeyWords(input, whatIsKeywords)) {
-    // //     createAndAddNewResponse('Just ask google')
-    // // }
-    // // else if (input == "anything else"){
-    // //     createAndAddNewResponse('Clever one!')
-    // // }
-    // else {
-    //     createAndAddNewResponse('Sorry')
-    // }
 }
 
 
@@ -342,7 +259,6 @@ function checkForData(input, arrayToCheck) {
 
                         case "weather":
 
-                            // ook nog kijken voor bv "will the weather be nice today?", "what weather can I expect?"
 
                             if(check_is_keywords(input)) {
                                 for (var x = 0; x < inputarray.length; x++) {
@@ -355,7 +271,6 @@ function checkForData(input, arrayToCheck) {
                                                         case "nice":
                                                             console.log(data.item.condition.temp);
                                                             if(data.item.condition.temp > 20){
-                                                                // hier nog extra if's over data.item.condition.temp
                                                                 createAndAddNewResponse("Yes, indeed,  we have good weather! :) ");
                                                             }
 
@@ -369,7 +284,6 @@ function checkForData(input, arrayToCheck) {
                                                         case "ugly":
 
                                                             if(data.item.condition.temp < 20){
-                                                                // hier nog extra if's over data.item.condition.temp
                                                                 createAndAddNewResponse("Yes, indeed, today we have bad weather! :( ");
 
                                                             }
@@ -425,7 +339,6 @@ function checkForData(input, arrayToCheck) {
                                             case "warm":
                                                 console.log(data.item.condition.temp);
                                                 if (data.item.condition.temp > 20) {
-                                                    // hier nog extra if's over data.item.condition.temp
                                                     createAndAddNewResponse("Yes, it's a hot day! The temperature is " + data.item.condition.temp + " °C.");
                                                     break;
                                                 }
@@ -441,7 +354,6 @@ function checkForData(input, arrayToCheck) {
                                             case "cold":
                                             case "ugly":
                                                 if (data.item.condition.temp < 15) {
-                                                    // hier nog extra if's over data.item.condition.temp
                                                     createAndAddNewResponse("Yes, today you should remain inside. The temperature is only  " + data.item.condition.temp + " °C.");
                                                     break;
 
@@ -538,15 +450,7 @@ function checkForData(input, arrayToCheck) {
                                 );
                                 break;
                             }
-                        // case today
-                        // case tomorrow
-                        // case forecast
 
-                        //case location
-                            //country
-                            //region
-                        //case kelvin
-                        //case fahrenheit
 
                         case "--":
                             removeAllOutput();
