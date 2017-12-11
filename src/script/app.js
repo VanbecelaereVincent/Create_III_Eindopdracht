@@ -55,7 +55,7 @@ function getWeatherByCity(city, callback) {
 
     chosen_city = city;
     chosen_city = chosen_city.toUpperCase();
-    xhttp.open('GET', 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
+    xhttp.open('GET', 'https://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
     xhttp.send();
     bool = 0;
     //callback(bool);
@@ -579,7 +579,7 @@ function checkForData(input, arrayToCheck) {
 
     };
 
-    xhttp.open('GET', 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
+    xhttp.open('GET', 'https://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json', true);
     xhttp.send();
 
 
